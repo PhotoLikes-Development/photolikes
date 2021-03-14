@@ -2,7 +2,7 @@
 name = "photolikes"
 version = "0.1.0"
 description = ""
-authors = ["iburakov <speedwatson@gmail.com>"]
+authors = ["iburakov <speedwatson@gmail.com>", "YogurtTheHorse <yegorf1@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7.1"
@@ -17,6 +17,7 @@ image-classifiers = "1.0.0b1"
 schedule = "0.6.0"
 scikit-learn = "0.24.0"
 keras_applications = "1.0.8"
+python-telegram-bot = "^13.4.1"
 
 [tool.poetry.dev-dependencies]
 
