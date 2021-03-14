@@ -16,6 +16,7 @@ Libraries and frameworks:
 
 The repository uses [git flow](https://danielkummer.github.io/git-flow-cheatsheet/) branching model with supplemental scripts: 
 - make new release from `develop` branch and bump the version:
+
     `scripts/release.py {major,minor,patch} <relase_message>`
    
 ### Software development process
