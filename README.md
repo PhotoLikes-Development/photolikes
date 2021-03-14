@@ -2,7 +2,7 @@ Photolikes Telegram Bot
 ---
 
 Tooling:
-- Python 3.9
+- Python 3.7
 - [poetry](https://python-poetry.org/) for dependency management ([installation](https://python-poetry.org/docs/#installation))
 - MongoDB as DBMS
 - Docker and Docker Compose for containerized deployment 
