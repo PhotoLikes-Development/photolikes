@@ -9,6 +9,8 @@ class BaseConfig:
     MONGO_DATABASE: str
     MONGO_URI: str
 
+    TELEGRAM_TOKEN: str
+
 
 class ProductionConfig(BaseConfig):
     ENVIRONMENT = Environment.PRODUCTION
