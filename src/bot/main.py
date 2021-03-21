@@ -18,15 +18,7 @@ logger = logging.getLogger(__name__)
 model_loader = ModelLoader()
 
 
-def start(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text('Hi!')
-
-
-def help_command(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text('Help!')
-
-
-def echo(update: Update, ctx: CallbackContext) -> None:
+def handle(update: Update, ctx: CallbackContext) -> None:
     photos_number = len(update.message.photo)
 
     if not photos_number:
@@ -49,20 +41,10 @@ def echo(update: Update, ctx: CallbackContext) -> None:
 
 def main() -> None:
     """Start the bot."""
-    # Create the Updater and pass it your bot's token.
     updater = Updater(Config.TELEGRAM_TOKEN)
-
-    # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
-    # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
-
-    # on noncommand i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.photo & ~Filters.command, echo))
-
-    # Start the Bot
+    dispatcher.add_handler(MessageHandler(Filters.photo, handle))
     updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
