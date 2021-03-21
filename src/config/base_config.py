@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from config.enums.environment import Environment
@@ -10,6 +11,9 @@ class BaseConfig:
     MONGO_URI: str
 
     TELEGRAM_TOKEN: str
+
+    RUNTIME_WORKDIR = Path()
+    MODEL_DIR = RUNTIME_WORKDIR / "model_latest"
 
 
 class ProductionConfig(BaseConfig):
