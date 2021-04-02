@@ -1,21 +1,21 @@
+import io
 import logging
+
 import numpy
-import PIL
-
-from config import Config
-
+from PIL import Image
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from common.image_processing import dataurl_from_image, preprocess_image
+from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
 
-from model.model_loader import ModelLoader
+from common.image_processing import preprocess_image
+from config import Config
+from model.loaders.filesystem_model_loader import FilesystemModelLoader
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
-model_loader = ModelLoader()
+model_loader = FilesystemModelLoader()
 
 
 def handle(update: Update, ctx: CallbackContext) -> None:
@@ -25,18 +25,16 @@ def handle(update: Update, ctx: CallbackContext) -> None:
         update.message.reply_text('Please send image to me')
         return
 
-    if photos_number > 1:
-        update.message.reply_text('Please send only one photo per message')
-        return
-
-    photo = ctx.bot.get_file(update.message.photo[0].file_id)
+    photo_bytes = ctx.bot.get_file(update.message.photo[0].file_id).download_as_bytearray()
+    photo = Image.open(io.BytesIO(photo_bytes))
     model = model_loader.get_instance()
     image_arr = preprocess_image(photo)
     estimation = model.predict(numpy.array([image_arr]))[0]
     lo, mid, hi = estimation
+    score = 10 * hi + 6 * mid
 
-    update.message.reply_text(f'There is {lo * 100}% probability that photo will be low-rated, '
-                              f'{mid * 100} average-rated and {hi * 100} high-rated.')
+    update.message.reply_text(f'Your score is *{score:.2f}* out of 10',
+                              parse_mode='markdown')
 
 
 def main() -> None:
@@ -44,7 +42,7 @@ def main() -> None:
     updater = Updater(Config.TELEGRAM_TOKEN)
     dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(MessageHandler(Filters.photo, handle))
+    dispatcher.add_handler(MessageHandler(Filters.all, handle))
     updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
